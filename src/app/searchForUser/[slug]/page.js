@@ -21,7 +21,7 @@ import axios from 'axios';
         //En async funktion för att hämta en profil efter mathcande slug värde.
         const fetchData = async () => {
             try {
-                const response = await axios.get(`https://traino.nu/php/testgetuser.php?id=5${slug}`);
+                const response = await axios.get(`https://traino.nu/php/testgetuser.php?id=${slug}`);
                 setData(response.data);
             } catch (error) {
                 console.error("Error fetching data:", error);

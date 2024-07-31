@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
+//params här hämtar in värdet på slugen.
   const BlogPost = ({ params }) => {
-    const [trainerStatus, setTrainerStatus] = useState(null);
+   //  Declarar useStates´s på toppen av scriptet vilket är en vanlig habit för react devs
     const [data, setData] = useState(null);
     const [displaytrainerStatus, setDisplayTrainerStatus] = useState("");
     const [userProfile, setUserProfile] = useState({
@@ -18,6 +18,7 @@ import axios from 'axios';
     const slug = params.slug;
 
     useEffect(() => {
+        //En async funktion för att hämta en profil efter mathcande slug värde.
         const fetchData = async () => {
             try {
                 const response = await axios.get(`https://traino.nu/php/testgetuser.php?id=5${slug}`);
@@ -29,18 +30,17 @@ import axios from 'axios';
 
         fetchData();
     }, [slug]);
-
+//En laddbar som visar användaren att sidan laddas medans frontenden hämtar data från API´n
     if (!data) {
         return <div>Loading...</div>;
     }
-
+//Fick ständigt åldern från API´n som null så tänker att det hellre står "Couldnt get age" än null.
     let ageIsWeird = data.age;
     if (data.age === null) {
         ageIsWeird = "Couldnt get age";
     }
-
+//Tror att det som visas här nedan inte behöver så mycket förklaring. Det är funktioner som handsas med förändringar av profilen och gör så att profile objektet uppdateras följande till användarens inputs.
     function statusTrainee() {
-        setTrainerStatus(false);
         setDisplayTrainerStatus("Trainee")
         setUserProfile(prevState => ({
             ...prevState,
@@ -50,7 +50,7 @@ import axios from 'axios';
     }
 
     function statusTrainer() {
-        setDisplayTrainerStatus("Trainer");
+        setDisplayTrainerStatus("Trainer")
         setUserProfile(prevState => ({
             ...prevState,
             role: true
@@ -65,8 +65,7 @@ import axios from 'axios';
         }));
         console.log(userProfile);
     }
-
-  function uploadProfile(){
+  async function uploadProfile(){
     setUserProfile(prevState => ({
         ...prevState,
        firstname : data.firstname,
@@ -75,13 +74,20 @@ import axios from 'axios';
        coverimage : data.coverimage
     }));
     console.log(userProfile);
-  
+    //Här laddas profilen upp till severn
+    try {
+        const response = await axios.post("http://localhost:5000/", userProfile);
+        console.log(response);
+    } catch (error) {
+        //Ifall något skulle gå snett
+        console.log(error);
+    }
   }
 
 
-
+//innanför return "()" tecknerna finns all html kod för sidan
     return (
-      <div class="mainContainer">
+      <div className="mainContainer">
         <div className="imgContainer"> 
         <img src={data.thumbnail}/>  
         </div>
@@ -104,7 +110,7 @@ import axios from 'axios';
       </div>
     );
   };
-  
+  //här exporteras blogPosts vilket är funktionen för denna sida
   export default BlogPost;
 
   
